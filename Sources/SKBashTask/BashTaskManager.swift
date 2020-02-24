@@ -14,7 +14,7 @@ public class BashTaskManager: NSObject {
     static var process: Process!
     static var fileToWrite = FileHandle()
 
-    static public func run(with argument: String, completion: @escaping(_ output: Data, _ error: Data, _ status: TerminationCommandStatus) -> Void = { _,_, _  in }) {
+    static public func run(with argument: String, completion: @escaping(_ output: Data, _ error: Data, _ status: SKBashTaskStatus) -> Void = { _,_, _  in }) {
         DispatchQueue.global().async {
             process = Process()
             process.launchPath = "/bin/bash"
@@ -35,7 +35,13 @@ public class BashTaskManager: NSObject {
             errorpipe.fileHandleForReading.closeFile()
 
             process.terminationHandler = { _ in
-                let status = TerminationCommandStatus(rawValue: process.terminationStatus) ?? .error
+                var status: SKBashTaskStatus
+                if errorData.isEmpty {
+                    status = SKBashTaskStatus.success(statusCode: process.terminationStatus)
+                } else {
+                    let errorMessage = String(data: errorData, encoding: .utf8)
+                    status = SKBashTaskStatus.error(message: errorMessage ?? "unknown error message", statusCode: process.terminationStatus)
+                }
                 completion(outputData, errorData, status)
             }
 
@@ -43,7 +49,7 @@ public class BashTaskManager: NSObject {
         }
     }
 
-    static public func run(with argument: String, completion: @escaping(String, TerminationCommandStatus) -> Void = { _,_  in }) {
+    static public func run(with argument: String, completion: @escaping(String, SKBashTaskStatus) -> Void = { _,_  in }) {
         run(with: argument) { (outputData, errorData, status) in
             let outputString = String(data: outputData, encoding: .utf8) ?? ""
             let errorString = String(data: errorData, encoding: .utf8) ?? ""

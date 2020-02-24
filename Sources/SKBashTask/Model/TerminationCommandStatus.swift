@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum TerminationCommandStatus: Int32 {
-    case success = 0
-    case error
+public enum SKBashTaskStatus: Error {
+    case success(statusCode: Int32)
+    case error(message: String, statusCode: Int32)
 }
