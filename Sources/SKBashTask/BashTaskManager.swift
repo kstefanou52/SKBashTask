@@ -52,10 +52,8 @@ public class BashTaskManager: NSObject {
     static public func run(with argument: String, completion: @escaping(String, SKBashTaskStatus) -> Void = { _,_  in }) {
         run(with: argument) { (outputData, errorData, status) in
             let outputString = String(data: outputData, encoding: .utf8) ?? ""
-            let errorString = String(data: errorData, encoding: .utf8) ?? ""
 
-            let responseString = outputString.appending(errorString)
-            completion(responseString, status)
+            completion(outputString, status)
         }
     }
 }
