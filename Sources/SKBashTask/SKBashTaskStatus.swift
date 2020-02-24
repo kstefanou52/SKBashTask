@@ -1,5 +1,5 @@
 //
-//  BashTaskManager.swift
+//  SKBashTaskStatus.swift
 //  inspecto
 //
 //  Created by Kostis on 05/03/2019.
@@ -37,7 +37,7 @@ public class BashTaskManager: NSObject {
             process.terminationHandler = { _ in
                 var status: SKBashTaskStatus
                 if errorData.isEmpty {
-                    status = SKBashTaskStatus.success(statusCode: process.terminationStatus)
+                    status = SKBashTaskStatus.success
                 } else {
                     let errorMessage = String(data: errorData, encoding: .utf8)
                     status = SKBashTaskStatus.error(message: errorMessage ?? "unknown error message", statusCode: process.terminationStatus)
