@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum SKBashTaskStatus: Error {
+public enum SKBashTaskStatus: Error, Equatable {
     case success
     case error(message: String, statusCode: Int32)
 }
